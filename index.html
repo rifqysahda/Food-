@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kedai Rifqy - Food Portfolio</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Load FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-highlight: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.25rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Pulsing Green Dot */
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e;
+            animation: pulse-green 1.5s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* Floating Background Emojis */
+        .emoji-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-emoji {
+            position: absolute;
+            bottom: -50px;
+            font-size: 2rem;
+            opacity: 0.3;
+            animation: float-up linear infinite;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Card & Image Effects */
+        .menu-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .menu-image {
+            transition: transform 0.5s ease;
+        }
+        .menu-card:hover .menu-image {
+            transform: scale(1.05);
+        }
+
+        /* Glow Effect Interactive */
+        .img-glow {
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+        }
+        .img-glow.active-glow {
+            box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.4) !important;
+            border-color: rgba(255, 255, 255, 0.7) !important;
+            z-index: 20;
+        }
+
+        /* Admin Utilities */
+        .admin-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 4px;
+            padding: 4px 8px;
+            transition: all 0.3s ease;
+        }
+        .admin-input:focus {
+            outline: none;
+            border-color: #facc15; 
+            box-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+        }
+        
+        /* Progress Bar Animation */
+        .progress-fill {
+            transition: width 1s ease-in-out;
+        }
+
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Animated Background -->
+    <div class="emoji-bg" id="emoji-container"></div>
+    
+    <!-- Background Music Audio Element -->
+    <audio id="bg-music" loop></audio>
+
+    <!-- Floating Music Toggle Button -->
+    <button id="music-toggle" class="fixed top-6 left-4 md:top-24 z-40 w-12 h-12 rounded-full glass-panel flex items-center justify-center hover:bg-white hover:bg-opacity-20 transition-all shadow-lg text-gray-400 group" title="Toggle Music">
+        <i class="fa-solid fa-volume-mute group-hover:scale-110 transition-transform"></i>
+    </button>
+
+    <!-- Floating Admin Lock Button -->
+    <button onclick="openAdminModal()" class="fixed top-6 right-4 md:top-24 z-40 w-12 h-12 rounded-full glass-panel flex items-center justify-center hover:bg-yellow-500/20 border-yellow-500/30 transition-all shadow-lg group" title="Admin Login">
+        <i class="fa-solid fa-lock text-yellow-500 group-hover:scale-110 transition-transform"></i>
+    </button>
+
+    <!-- Main Content Wrapper -->
+    <div class="relative z-10 max-w-6xl mx-auto px-4 py-8 pb-40">
+        
+        <!-- Header & Profile Section -->
+        <header class="glass-panel p-6 mb-12 flex flex-col md:flex-row items-start justify-between gap-6 reveal-up">
+            <!-- Profile & Bio (Injected via JS) -->
+            <div id="profile-container" class="flex flex-col md:flex-row items-center md:items-start gap-6 w-full text-center md:text-left">
+                <!-- Content handled by renderHeader() -->
+            </div>
+
+            <!-- Real-time Clock -->
+            <div class="glass-panel p-4 flex flex-col items-center justify-center min-w-[200px] flex-shrink-0 mx-auto md:mx-0">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="status-dot"></span>
+                    <span class="text-sm font-medium text-green-400 tracking-wider uppercase">Live Time</span>
+                </div>
+                <div id="clock-time" class="text-2xl font-bold mb-1 text-white">--:--:--</div>
+                <div id="clock-date" class="text-xs text-gray-300">-- --- ----</div>
+            </div>
+        </header>
+
+        <!-- Catalog Section -->
+        <section class="mb-16">
+            <div class="flex items-center gap-3 mb-8 reveal-up">
+                <i class="fa-solid fa-utensils text-2xl text-yellow-400"></i>
+                <h2 class="text-3xl font-bold text-white">Semua Menu Kami</h2>
+            </div>
+            
+            <!-- Grid Container for JS rendered items -->
+            <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Items will be injected here by JS -->
+            </div>
+        </section>
+
+        <!-- Best Seller Section -->
+        <section class="mb-16 reveal-up">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fa-solid fa-fire text-2xl text-orange-500"></i>
+                <h2 class="text-2xl font-bold text-white">Menu Terlaris</h2>
+            </div>
+            <div class="flex flex-col gap-6" id="best-seller-container">
+                <!-- Progress bars injected via JS -->
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-10 text-center border-t border-[rgba(255,255,255,0.1)] reveal-up">
+            <div class="text-5xl mb-4 animate-bounce">🍟</div>
+            <h2 id="footer-name" class="text-3xl font-bold mb-8 tracking-wider">Kedai Rifqy</h2>
+            
+            <!-- Circular Social Buttons -->
+            <div class="flex justify-center gap-5 mb-10">
+                <a href="https://instagram.com/rifqysahda_id" target="_blank" class="w-14 h-14 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[rgba(255,255,255,0.2)] hover:scale-110 transition-all border border-[rgba(255,255,255,0.05)] text-white shadow-lg">
+                    <i class="fa-brands fa-instagram text-2xl"></i>
+                </a>
+                <a href="https://t.me/flyterr" target="_blank" class="w-14 h-14 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[rgba(255,255,255,0.2)] hover:scale-110 transition-all border border-[rgba(255,255,255,0.05)] text-white shadow-lg">
+                    <i class="fa-brands fa-telegram text-2xl"></i>
+                </a>
+                <a href="https://wa.me/6285129217113" target="_blank" class="w-14 h-14 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[rgba(255,255,255,0.2)] hover:scale-110 transition-all border border-[rgba(255,255,255,0.05)] text-white shadow-lg">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                </a>
+            </div>
+            
+            <!-- Address Display -->
+            <div id="footer-address-container" class="mb-10 max-w-lg mx-auto text-gray-300 px-4">
+                <!-- Address injected by JS -->
+            </div>
+            
+            <p class="text-sm text-gray-500 font-light tracking-wide pb-4">© 2026 Hak Cipta Dilindungi.</p>
+        </footer>
+    </div>
+
+    <!-- Shopping Cart Bar (Fixed Bottom) -->
+    <div class="fixed bottom-0 left-0 w-full z-40 p-4 pointer-events-none">
+        <div class="max-w-4xl mx-auto glass-panel p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[rgba(255,255,255,0.2)] bg-opacity-80 backdrop-blur-xl pointer-events-auto" style="background: rgba(15, 32, 39, 0.95);">
+            <div class="flex items-center gap-4 w-full sm:w-auto">
+                <div class="w-12 h-12 rounded-full glass-button flex items-center justify-center relative flex-shrink-0">
+                    <i class="fa-solid fa-cart-shopping text-xl"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-lg">0</span>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-300">Total Item: <span id="total-items" class="font-bold text-white">0</span></p>
+                    <p class="text-lg font-bold text-green-400">Total: <span id="total-price">Rp 0</span></p>
+                </div>
+            </div>
+            <button onclick="checkoutCart()" class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl font-bold text-white shadow-lg hover:shadow-green-500/50 transition-all transform hover:-translate-y-1 whitespace-nowrap">
+                Checkout <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Custom Messages Modal -->
+    <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-70 backdrop-blur-md transition-opacity duration-300 opacity-0">
+        <div class="glass-panel p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300" id="modal-content">
+            <div class="w-16 h-16 rounded-full bg-green-500 bg-opacity-20 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-check text-3xl text-green-400"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">Pesan</h3>
+            <p id="modal-message" class="text-gray-300 mb-6 text-sm">Pesan detail disini.</p>
+            <button onclick="closeModal()" class="w-full py-3 glass-button rounded-xl font-bold text-white hover:bg-[rgba(255,255,255,0.2)]">
+                Tutup
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-70 backdrop-blur-md transition-opacity duration-300 opacity-0">
+        <div class="glass-panel p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300" id="admin-modal-content">
+            <div class="w-16 h-16 rounded-full bg-yellow-500 bg-opacity-20 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-lock text-3xl text-yellow-400"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">Admin Mode</h3>
+            <p class="text-gray-300 mb-4 text-sm">Masukkan password untuk akses panel admin.</p>
+            <input type="password" id="admin-password" class="w-full mb-4 p-3 rounded-lg bg-black bg-opacity-40 border border-gray-600 text-white focus:outline-none focus:border-yellow-400 text-center" placeholder="Password...">
+            <div class="flex gap-2">
+                <button onclick="closeAdminModal()" class="w-1/2 py-2 glass-button rounded-lg font-bold text-gray-300 hover:text-white">Batal</button>
+                <button onclick="loginAdmin()" class="w-1/2 py-2 bg-yellow-500 rounded-lg font-bold text-gray-900 hover:bg-yellow-400 shadow-lg">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Change Password Modal -->
+    <div id="password-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-70 backdrop-blur-md transition-opacity duration-300 opacity-0">
+        <div class="glass-panel p-8 max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300" id="password-modal-content">
+            <div class="w-16 h-16 rounded-full bg-blue-500 bg-opacity-20 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-key text-3xl text-blue-400"></i>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">Ganti Password</h3>
+            <p class="text-gray-300 mb-4 text-sm">Masukkan kredensial untuk keamanan.</p>
+            <input type="password" id="old-password" class="w-full mb-3 p-3 rounded-lg bg-black bg-opacity-40 border border-gray-600 text-white focus:outline-none focus:border-blue-400 text-center" placeholder="Password Lama...">
+            <input type="password" id="new-password" class="w-full mb-4 p-3 rounded-lg bg-black bg-opacity-40 border border-gray-600 text-white focus:outline-none focus:border-blue-400 text-center" placeholder="Password Baru...">
+            <div class="flex gap-2">
+                <button onclick="closePasswordModal()" class="w-1/2 py-2 glass-button rounded-lg font-bold text-gray-300 hover:text-white">Batal</button>
+                <button onclick="saveNewPassword()" class="w-1/2 py-2 bg-blue-500 rounded-lg font-bold text-white hover:bg-blue-400 shadow-lg">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // @ts-nocheck
+        
+        // --- Intersection Observer for Scroll Reveal Animations ---
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { 
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        function observeRevealElements() {
+            const elements = document.querySelectorAll('.reveal-up:not(.observed)');
+            elements.forEach(el => {
+                el.classList.add('observed');
+                scrollObserver.observe(el);
+            });
+        }
+
+        // --- Data Management (Profile, Menu & Address) ---
+        let isAdmin = false;
+
+        // Configuration Variables
+        let profileName = localStorage.getItem('kedaiRifqyName') || "Kedai Rifqy";
+        let profileImg = localStorage.getItem('kedaiRifqyProfileImg') || "https://cdn.phototourl.com/member/2026-10-12-c94bb910-ff23-485b-b491-f538bb3885ea.jpg";
+        let profileBio = localStorage.getItem('kedaiRifqyBio') || "Halo, Selamat Datang di Kedai Rifqy! Silakan pilih hidangan favorit Anda di bawah ini. Kami menyajikan cita rasa Nusantara terbaik dengan bahan-bahan segar setiap harinya.";
+        let bgMusicUrl = localStorage.getItem('kedaiRifqyMusic') || "https://www.image2url.com/r2/default/audio/1791808128441-b4b1c4a8-e0f0-44b8-bd66-21f68c33ea3f.mp3";
+        let adminPasswordSaved = localStorage.getItem('kedaiRifqyPassword') || "061204";
+
+        let storeAddress = localStorage.getItem('kedaiRifqyAddress') || "JL. Merpati 1, Pinang jaya, Kemiling Bandar Lampung, Indonesia";
+        
+        const defaultMenuItems = [
+            { id: 1, name: "Bakso Malang Spesial", price: 25000, img: "https://images.unsplash.com/photo-1585032226651-72464eb3c06a?w=500&q=80", stock: 15, sold: 0 },
+            { id: 2, name: "Paket Ayam Crispy", price: 30000, img: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=500&q=80", stock: 20, sold: 0 },
+            { id: 3, name: "Bebek Bakar Madu", price: 45000, img: "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=500&q=80", stock: 10, sold: 0 },
+            { id: 4, name: "Nasi Rames Komplit", price: 20000, img: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500&q=80", stock: 25, sold: 0 },
+            { id: 5, name: "Mie Goreng Spesial", price: 22000, img: "https://images.unsplash.com/photo-1569718212165-3a127f80f15c?w=500&q=80", stock: 18, sold: 0 },
+            { id: 6, name: "Sate Ayam Kacang", price: 35000, img: "https://images.unsplash.com/photo-1555196301-2a62886a8775?w=500&q=80", stock: 12, sold: 0 },
+            { id: 7, name: "Nasi Goreng Seafood", price: 35000, img: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&q=80", stock: 8, sold: 0 },
+            { id: 8, name: "Burger Premium", price: 40000, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80", stock: 5, sold: 0 },
+            { id: 9, name: "Es Teh Manis", price: 5000, img: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&q=80", stock: 50, sold: 0 },
+            { id: 10, name: "Kopi Susu Gula Aren", price: 18000, img: "https://images.unsplash.com/photo-1511920170133-f6e5200bb385?w=500&q=80", stock: 30, sold: 0 }
+        ];
+        let menuItems = JSON.parse(localStorage.getItem('kedaiRifqyMenuData')) || defaultMenuItems;
+
+        window.saveData = function() {
+            localStorage.setItem('kedaiRifqyMenuData', JSON.stringify(menuItems));
+            localStorage.setItem('kedaiRifqyAddress', storeAddress);
+        };
+
+        // --- Interaction Effects ---
+        window.toggleGlow = function(element) {
+            element.classList.toggle('active-glow');
+        };
+
+        // --- Audio Player Logic ---
+        const audio = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-toggle');
+        const musicIcon = musicBtn.querySelector('i');
+        let musicStarted = false;
+        let isPlaying = false;
+
+        function toggleMusic(forcePlay = false) {
+            if (forcePlay && !isPlaying) {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    musicIcon.className = 'fa-solid fa-volume-up';
+                    musicBtn.classList.remove('text-gray-400');
+                    musicBtn.classList.add('text-white', 'border-blue-400');
+                }).catch(e => console.log("Audio autoplay prevented by browser."));
+            } else if (!forcePlay) {
+                if (isPlaying) {
+                    audio.pause();
+                    isPlaying = false;
+                    musicIcon.className = 'fa-solid fa-volume-mute';
+                    musicBtn.classList.add('text-gray-400');
+                    musicBtn.classList.remove('text-white', 'border-blue-400');
+                } else {
+                    audio.play().then(() => {
+                        isPlaying = true;
+                        musicIcon.className = 'fa-solid fa-volume-up';
+                        musicBtn.classList.remove('text-gray-400');
+                        musicBtn.classList.add('text-white', 'border-blue-400');
+                    });
+                }
+            }
+        }
+
+        document.body.addEventListener('click', () => {
+            if (!musicStarted) {
+                musicStarted = true;
+                toggleMusic(true);
+            }
+        }, { once: true });
+
+        musicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            musicStarted = true;
+            toggleMusic();
+        });
+
+        // --- Render Header (Profile, Bio, Music URL) ---
+        window.renderHeader = function() {
+            const container = document.getElementById('profile-container');
+            document.getElementById('footer-name').textContent = profileName;
+
+            if (audio.getAttribute('src') !== bgMusicUrl) {
+                const wasPlaying = !audio.paused;
+                audio.src = bgMusicUrl;
+                if (wasPlaying) {
+                    audio.play().catch(e => console.log("Audio play prevented after src change."));
+                }
+            }
+
+            if (isAdmin) {
+                container.innerHTML = `
+                    <div class="w-full flex flex-col gap-4">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                            <h2 class="text-xl font-bold text-yellow-400"><i class="fa-solid fa-pen-to-square"></i> Edit Profil & Info</h2>
+                            <div class="flex gap-2">
+                                <button onclick="openPasswordModal()" class="px-3 py-1 bg-blue-600 rounded-lg text-white text-xs font-bold hover:bg-blue-500 transition shadow"><i class="fa-solid fa-key"></i> Ganti Password</button>
+                                <button onclick="saveProfileConfig()" class="px-4 py-1 bg-green-600 rounded-lg text-white text-xs font-bold hover:bg-green-500 transition shadow">Simpan Data</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1 block">Nama Toko / Profil</label>
+                                <input type="text" id="admin-profile-name" class="w-full admin-input text-sm text-left font-bold" value="${profileName}">
+                            </div>
+                            <div>
+                                <label class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1 block">URL Foto Profil</label>
+                                <input type="text" id="admin-profile-img" class="w-full admin-input text-sm text-left" value="${profileImg}">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1 block">URL Background Music</label>
+                                <input type="text" id="admin-music-url" class="w-full admin-input text-sm text-left" value="${bgMusicUrl}">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1 block">Teks Bio / Deskripsi</label>
+                                <textarea id="admin-bio-text" class="w-full admin-input text-sm text-left" rows="2">${profileBio}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="relative flex-shrink-0">
+                        <img src="${profileImg}" onclick="toggleGlow(this)" alt="Profile Picture" class="img-glow w-24 h-24 rounded-full object-cover border-4 border-[rgba(255,255,255,0.2)] shadow-lg" onerror="this.src='https://placehold.co/200x200/2c5364/ffffff?text=Profile'">
+                    </div>
+                    <div class="flex flex-col justify-center max-w-lg">
+                        <h1 class="text-3xl font-bold mb-2 tracking-wide text-white">${profileName}</h1>
+                        <p class="text-gray-300 text-sm leading-relaxed">${profileBio}</p>
+                    </div>
+                `;
+            }
+        };
+
+        window.saveProfileConfig = function() {
+            profileName = document.getElementById('admin-profile-name').value;
+            profileImg = document.getElementById('admin-profile-img').value;
+            bgMusicUrl = document.getElementById('admin-music-url').value;
+            profileBio = document.getElementById('admin-bio-text').value;
+            
+            localStorage.setItem('kedaiRifqyName', profileName);
+            localStorage.setItem('kedaiRifqyProfileImg', profileImg);
+            localStorage.setItem('kedaiRifqyMusic', bgMusicUrl);
+            localStorage.setItem('kedaiRifqyBio', profileBio);
+            
+            window.renderHeader();
+            window.showModal("Profil Disimpan", "Info Profil toko dan musik telah diperbarui.", "fa-check-circle", "text-green-400");
+        };
+
+        window.updateProduct = function(id, field, value) {
+            const mItem = menuItems.find(m => m.id === id);
+            if (mItem) {
+                if (field === 'price' || field === 'stock' || field === 'sold') {
+                    let parsed = parseInt(value, 10);
+                    if (isNaN(parsed) || parsed < 0) parsed = 0;
+                    mItem[field] = parsed;
+                } else {
+                    mItem[field] = value;
+                }
+                
+                window.saveData();
+                
+                if (field === 'sold') {
+                    window.renderBestSellers();
+                } else {
+                    window.renderMenu();
+                    window.renderBestSellers();
+                }
+            }
+        };
+
+        window.renderAddress = function() {
+            const container = document.getElementById('footer-address-container');
+            if (isAdmin) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-sm font-bold text-yellow-400"><i class="fa-solid fa-pen-to-square"></i> Edit Alamat:</span>
+                            <button onclick="saveAddress()" class="px-3 py-1 bg-green-600 rounded text-white text-xs font-bold hover:bg-green-500 transition shadow">Simpan</button>
+                        </div>
+                        <textarea id="admin-address-input" class="w-full admin-input text-center" rows="2">${storeAddress}</textarea>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `<p class="leading-relaxed"><i class="fa-solid fa-location-dot mr-2 text-gray-400"></i> ${storeAddress}</p>`;
+            }
+        };
+
+        window.saveAddress = function() {
+            const newAddress = document.getElementById('admin-address-input').value;
+            storeAddress = newAddress;
+            window.saveData();
+            window.renderAddress();
+            window.showModal("Berhasil Disimpan", "Alamat toko telah diperbarui.", "fa-check-circle", "text-green-400");
+        };
+
+        window.renderBestSellers = function() {
+            const container = document.getElementById('best-seller-container');
+            container.innerHTML = '';
+            
+            const sortedItems = [...menuItems].sort((a, b) => b.sold - a.sold).slice(0, 5);
+            const maxSold = sortedItems.length > 0 && sortedItems[0].sold > 0 ? sortedItems[0].sold : 1; 
+            
+            sortedItems.forEach((item, index) => {
+                const percentage = Math.max(5, (item.sold / maxSold) * 100); 
+                const badgeColor = index === 0 ? 'text-yellow-400' : index === 1 ? 'text-gray-300' : index === 2 ? 'text-orange-400' : 'text-gray-500';
+                
+                let soldUI = '';
+                if (isAdmin) {
+                    soldUI = `<div class="text-sm flex items-center gap-2 text-blue-300">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <input type="number" min="0" class="admin-input text-center font-bold" style="width: 70px;" value="${item.sold}" onchange="updateProduct(${item.id}, 'sold', this.value)">
+                        Terjual
+                    </div>`;
+                } else {
+                    soldUI = `<span class="text-sm text-gray-400 font-medium">${item.sold.toLocaleString('id-ID')} Terjual</span>`;
+                }
+
+                const barHTML = `
+                    <div class="w-full reveal-up">
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="font-semibold text-lg text-gray-100 flex items-center gap-2">
+                                <span class="font-bold ${badgeColor}">#${index + 1}</span> ${item.name}
+                            </span>
+                            ${soldUI}
+                        </div>
+                        <div class="w-full bg-[rgba(255,255,255,0.05)] h-2.5 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-green-500 to-emerald-400 h-full rounded-full progress-fill" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', barHTML);
+            });
+            
+            setTimeout(() => {
+                const fills = container.querySelectorAll('.progress-fill');
+                fills.forEach(fill => {
+                    const w = fill.style.width;
+                    fill.style.width = '0%';
+                    setTimeout(() => fill.style.width = w, 50);
+                });
+            }, 10);
+            
+            observeRevealElements();
+        };
+
+        // --- Cart Logistics ---
+        let cartItems = {};
+        let cartTotalItems = 0;
+        let cartTotalPrice = 0;
+        const formatIDR = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+
+        window.changeQty = function(id, delta) {
+            const mItem = menuItems.find(m => m.id == parseInt(id));
+            if (!mItem) return;
+            
+            let currentQty = cartItems[id] ? cartItems[id].quantity : 0;
+            let newQty = currentQty + delta;
+            
+            if (newQty < 0) newQty = 0;
+            if (newQty > mItem.stock) {
+                window.showModal("Stok Terbatas", `Stok ${mItem.name} hanya tersisa ${mItem.stock}.`, "fa-circle-exclamation", "text-yellow-400");
+                return;
+            }
+            
+            if (newQty === 0) {
+                delete cartItems[id];
+            } else {
+                if (!cartItems[id]) {
+                    cartItems[id] = { name: mItem.name, price: mItem.price, quantity: newQty };
+                } else {
+                    cartItems[id].quantity = newQty;
+                }
+            }
+            
+            // Re-calculate totals
+            cartTotalItems = 0;
+            cartTotalPrice = 0;
+            for (let k in cartItems) {
+                cartTotalItems += cartItems[k].quantity;
+                cartTotalPrice += (cartItems[k].quantity * cartItems[k].price);
+            }
+            
+            // Re-render menu to update button state & spans
+            window.renderMenu();
+            
+            document.getElementById('total-items').textContent = cartTotalItems.toString();
+            document.getElementById('cart-badge').textContent = cartTotalItems.toString();
+            document.getElementById('total-price').textContent = formatIDR(cartTotalPrice);
+            
+            if(delta > 0) {
+                const cartIcon = document.querySelector('.fa-cart-shopping').parentElement;
+                cartIcon.classList.add('scale-110', 'bg-[rgba(255,255,255,0.3)]');
+                setTimeout(() => { cartIcon.classList.remove('scale-110', 'bg-[rgba(255,255,255,0.3)]'); }, 200);
+            }
+        }
+
+        window.renderMenu = function() {
+            const menuContainer = document.getElementById('menu-grid');
+            menuContainer.innerHTML = ''; 
+
+            menuItems.forEach(item => {
+                const imgFallback = `https://placehold.co/500x400/2c5364/ffffff?text=${encodeURIComponent(item.name)}`;
+                const isHabis = item.stock <= 0;
+                const currentQty = cartItems[item.id] ? cartItems[item.id].quantity : 0;
+                
+                let cardDetails = '';
+                
+                if (isAdmin) {
+                    cardDetails = `
+                        <div class="flex flex-col gap-2 flex-grow mb-4">
+                            <div>
+                                <label class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1 block">URL Foto</label>
+                                <input type="text" class="w-full admin-input text-xs" value="${item.img}" onchange="updateProduct(${item.id}, 'img', this.value)">
+                            </div>
+                            <div>
+                                <label class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1 block">Nama Menu</label>
+                                <input type="text" class="w-full admin-input font-semibold" value="${item.name}" onchange="updateProduct(${item.id}, 'name', this.value)">
+                            </div>
+                            <div class="flex gap-2">
+                                <div class="w-1/2">
+                                    <label class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1 block">Harga</label>
+                                    <input type="number" class="w-full admin-input text-green-400 font-bold" value="${item.price}" onchange="updateProduct(${item.id}, 'price', this.value)">
+                                </div>
+                                <div class="w-1/2">
+                                    <label class="text-[10px] uppercase tracking-wider text-gray-400 font-bold mb-1 block">Stok</label>
+                                    <input type="number" min="0" class="w-full admin-input text-yellow-400 font-bold" value="${item.stock}" onchange="updateProduct(${item.id}, 'stock', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    cardDetails = `
+                        <div class="flex flex-col flex-grow mb-4">
+                            <h3 class="text-lg font-semibold text-white mb-1 leading-tight">${item.name}</h3>
+                            <p class="text-green-400 font-bold text-xl mb-1">${formatIDR(item.price)}</p>
+                            <div class="text-sm mt-1 flex items-center gap-2 ${isHabis ? 'text-red-400' : 'text-gray-300'}">
+                                <i class="fa-solid ${isHabis ? 'fa-circle-xmark' : 'fa-boxes-stacked'}"></i> 
+                                Stok: <span class="font-bold">${isHabis ? 'Habis' : item.stock}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                let orderUI = '';
+                if (!isAdmin) {
+                    if (isHabis) {
+                        orderUI = `
+                            <button class="w-full py-2.5 rounded-lg flex items-center justify-center gap-2 bg-gray-600 cursor-not-allowed opacity-50">
+                                <i class="fa-solid fa-ban"></i>
+                                <span class="font-medium">Habis</span>
+                            </button>
+                        `;
+                    } else {
+                        orderUI = `
+                            <div class="flex items-center justify-between bg-[rgba(0,0,0,0.3)] rounded-xl p-1 border border-[rgba(255,255,255,0.1)] shadow-inner">
+                                <button onclick="changeQty('${item.id}', -1)" class="w-12 h-10 flex items-center justify-center rounded-lg hover:bg-[rgba(255,255,255,0.1)] transition-all text-red-400 hover:text-red-300">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                                <span class="font-bold text-lg w-10 text-center ${currentQty > 0 ? 'text-white' : 'text-gray-500'}">${currentQty}</span>
+                                <button onclick="changeQty('${item.id}', 1)" class="w-12 h-10 flex items-center justify-center rounded-lg hover:bg-[rgba(255,255,255,0.1)] transition-all text-green-400 hover:text-green-300">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        `;
+                    }
+                }
+
+                const cardHTML = `
+                    <div class="glass-panel menu-card overflow-hidden flex flex-col h-full reveal-up">
+                        <div class="relative h-48 overflow-hidden bg-gray-800">
+                            <img src="${item.img}" onclick="toggleGlow(this)" onerror="this.src='${imgFallback}'" alt="${item.name}" class="menu-image img-glow w-full h-full object-cover" loading="lazy">
+                        </div>
+                        <div class="p-5 flex flex-col flex-grow">
+                            ${cardDetails}
+                            <div class="mt-auto">
+                                ${orderUI}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                menuContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+            observeRevealElements();
+        };
+
+        function updateClock() {
+            const now = new Date();
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            document.getElementById('clock-time').textContent = now.toLocaleTimeString('id-ID', timeOptions);
+            const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('clock-date').textContent = now.toLocaleDateString('id-ID', dateOptions);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        window.renderHeader();
+        window.renderAddress();
+        window.renderBestSellers();
+        window.renderMenu();
+        observeRevealElements(); 
+
+        window.checkoutCart = function() {
+            if (cartTotalItems === 0) {
+                window.showModal("Keranjang Kosong", "Silakan atur jumlah menu favorit Anda sebelum checkout.", "fa-circle-exclamation", "text-yellow-400");
+                return;
+            }
+            
+            let message = `*Halo ${profileName}!*\nSaya ingin memesan:\n\n`;
+            let index = 1;
+            
+            for (let id in cartItems) {
+                const item = cartItems[id];
+                const itemTotal = item.price * item.quantity;
+                message += `${index}. ${item.name} (x${item.quantity}) - ${formatIDR(itemTotal)}\n`;
+                index++;
+                
+                const mItem = menuItems.find(m => m.id == parseInt(id));
+                if (mItem) {
+                    mItem.stock -= item.quantity;
+                    if (mItem.stock < 0) mItem.stock = 0;
+                    
+                    if (!mItem.sold) mItem.sold = 0;
+                    mItem.sold += item.quantity;
+                }
+            }
+            
+            window.saveData();
+            
+            message += `\n*Total Item:* ${cartTotalItems}`;
+            message += `\n*Total Harga:* ${formatIDR(cartTotalPrice)}`;
+            message += `\n*Alamat Tujuan:* (Isi alamat pengiriman Anda di sini)\n`;
+            message += `\nTerima kasih! Mohon segera diproses ya.`;
+
+            const waNumber = "6285129217113"; 
+            const encodedMessage = encodeURIComponent(message);
+            const waUrl = `https://wa.me/${waNumber}?text=${encodedMessage}`;
+            window.open(waUrl, '_blank');
+            
+            window.showModal("Mengarahkan ke WhatsApp...", "Struk pesanan Anda telah dibuat.", "fa-whatsapp", "text-green-500");
+            
+            cartItems = {};
+            cartTotalItems = 0;
+            cartTotalPrice = 0;
+            document.getElementById('total-items').textContent = "0";
+            document.getElementById('cart-badge').textContent = "0";
+            document.getElementById('total-price').textContent = "Rp 0";
+            
+            window.renderMenu();
+            window.renderBestSellers(); 
+        }
+
+        // --- Modals Logic ---
+        const modal = document.getElementById('custom-modal');
+        const modalContent = document.getElementById('modal-content');
+        
+        const adminModal = document.getElementById('admin-modal');
+        const adminModalContent = document.getElementById('admin-modal-content');
+        const adminPasswordInput = document.getElementById('admin-password');
+
+        const passwordModal = document.getElementById('password-modal');
+        const passwordModalContent = document.getElementById('password-modal-content');
+
+        window.showModal = function(title, text, iconClass, iconColorClass) {
+            const modalIconContainer = modalContent.querySelector('div:first-child');
+            modalIconContainer.innerHTML = `<i class="fa-solid ${iconClass} text-3xl ${iconColorClass}"></i>`;
+            modalContent.querySelector('h3').textContent = title;
+            document.getElementById('modal-message').textContent = text;
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+        }
+
+        window.closeModal = function() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // Admin Auth
+        window.openAdminModal = function() {
+            if (isAdmin) {
+                isAdmin = false;
+                window.showModal("Mode Admin Ditutup", "Anda telah keluar dari mode admin.", "fa-lock", "text-yellow-400");
+                window.renderHeader();
+                window.renderMenu();
+                window.renderBestSellers();
+                window.renderAddress(); 
+                return;
+            }
+            adminPasswordInput.value = '';
+            adminModal.classList.remove('hidden');
+            void adminModal.offsetWidth;
+            adminModal.classList.remove('opacity-0');
+            adminModalContent.classList.remove('scale-95');
+        };
+
+        window.closeAdminModal = function() {
+            adminModal.classList.add('opacity-0');
+            adminModalContent.classList.add('scale-95');
+            setTimeout(() => { adminModal.classList.add('hidden'); }, 300);
+        };
+
+        window.loginAdmin = function() {
+            if (adminPasswordInput.value === adminPasswordSaved) {
+                isAdmin = true;
+                window.closeAdminModal();
+                window.showModal("Login Berhasil", "Mode Admin Aktif! Semua elemen dengan form input dapat diubah secara permanen.", "fa-unlock", "text-green-400");
+                window.renderHeader();
+                window.renderMenu();
+                window.renderBestSellers();
+                window.renderAddress(); 
+            } else {
+                window.closeAdminModal();
+                setTimeout(() => {
+                    window.showModal("Login Gagal", "Password yang Anda masukkan salah.", "fa-circle-xmark", "text-red-500");
+                }, 350);
+            }
+        };
+
+        // Change Password Flow
+        window.openPasswordModal = function() {
+            document.getElementById('old-password').value = '';
+            document.getElementById('new-password').value = '';
+            passwordModal.classList.remove('hidden');
+            void passwordModal.offsetWidth;
+            passwordModal.classList.remove('opacity-0');
+            passwordModalContent.classList.remove('scale-95');
+        }
+
+        window.closePasswordModal = function() {
+            passwordModal.classList.add('opacity-0');
+            passwordModalContent.classList.add('scale-95');
+            setTimeout(() => { passwordModal.classList.add('hidden'); }, 300);
+        }
+
+        window.saveNewPassword = function() {
+            const oldP = document.getElementById('old-password').value;
+            const newP = document.getElementById('new-password').value;
+            
+            if (oldP === adminPasswordSaved) {
+                if (newP.trim() === '') {
+                    window.showModal("Gagal", "Password baru tidak boleh kosong.", "fa-circle-xmark", "text-red-500");
+                    return;
+                }
+                adminPasswordSaved = newP;
+                localStorage.setItem('kedaiRifqyPassword', newP);
+                window.closePasswordModal();
+                setTimeout(() => {
+                    window.showModal("Berhasil", "Password Admin berhasil diperbarui.", "fa-check", "text-green-500");
+                }, 350);
+            } else {
+                window.closePasswordModal();
+                setTimeout(() => {
+                    window.showModal("Gagal", "Password lama salah.", "fa-circle-xmark", "text-red-500");
+                }, 350);
+            }
+        }
+
+        modal.addEventListener('click', (e) => { if (e.target === modal) window.closeModal(); });
+        adminModal.addEventListener('click', (e) => { if (e.target === adminModal) window.closeAdminModal(); });
+        passwordModal.addEventListener('click', (e) => { if (e.target === passwordModal) window.closePasswordModal(); });
+
+    </script>
+</body>
+</html>
